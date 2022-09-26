@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Index {% endblock %}
+
+{% block css_files %} 
+    <link rel="stylesheet" href="{% static 'weather/style.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <h1 class= "text-center">WeatBlock</h1>
+
+    <div class="d-flex justify-content-center mt-5" id='spinner1'>
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+    <div id="form">
+    {% comment %} <div class="form-control form-control-lg shadow-none {% if form.date_field.errors %} errors {% endif %}">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form.date_field.errors }}
+            {{ form.date_field.label_tag }}
+            {{ form.date_field }}
+            <button type="submit">Submit</button>
+        </form>
+    </div> {% endcomment %}
+    </div>
+    {% if user_message %}
+    <div>
+        <p>{{user_message}}</p>
+    </div>
+    {% endif %}
+
+    {% block scripts %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>  
+          <script>
+            const spinnerBox = document.getElementById('spinner1')
+            const formBox = document.getElementById('form')
+
+            $.ajax({
+                type: 'GET',
+                url: '/',
+                success: function(response){
+                    spinnerBox.classList.add('d-none')
+                    console.log(response)
+                    formBox.innerHTML += `
+                    <div class="form-control form-control-lg shadow-none {% if form.date_field.errors %} errors {% endif %}">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            {{ form.date_field.errors }}
+                            {{ form.date_field.label_tag }}
+                            {{ form.date_field }}
+                            <button type="submit">Submit</button>
+                        </form>
+                    </div>`
+                },
+                error: function(err){
+                    console.log(err)
+                }
+            })
+        </script>
+    {% endblock %}
+{% endblock %}
