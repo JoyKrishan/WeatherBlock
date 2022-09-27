@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 import requests
 import asyncio
 from ethairballoons.ethairballoons import ethairBalloons
+import ast
 
 
 
@@ -105,13 +106,10 @@ async def index(request):
             print(form.cleaned_data)
             picked_date = form.cleaned_data['date_field']
             picked_date_str = picked_date.strftime("%Y-%m-%d")
-            record = MYSCHEMA.findById(picked_date_str)
-            print(record)
+            record = ast.literal_eval(MYSCHEMA.findById(picked_date_str))
             # full_url = get_full_url(picked_date_str)
             # max_temp_C, max_temp_F = get_json_data(full_url)
-            # user_message = f"The max tempature for {picked_date_str} is {max_temp_C} Celcius and {max_temp_F} Farhenheit"
-
-
+            user_message = f"The max tempature for {record['date']} is {record['maxTempC']} Celcius and {record['maxTempF']} Farhenheit."
             new_form = DateForm()
             return render(request, 'weather/index.html', {'form': new_form, 'user_message':record})
 

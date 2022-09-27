@@ -26,19 +26,35 @@
     </div> {% endcomment %}
     </div>
     {% if user_message %}
-    <div>
-        <p>{{user_message}}</p>
-    </div>
+    <blockquote class="blockquote text-center">
+        <p class="mb-0 mt-2">The maximum Tempature for <strong style= "color:blue";>{{ user_message.date }}</strong> in Dhaka are <span style= "color:red";>{{ user_message.maxTempC}}C ,{{ user_message.maxTempF }}F</span> </p>
+        
+      </blockquote>
     {% endif %}
 
     {% block scripts %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>  
-          <script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+        {% if user_message %} 
+        <script>
             const spinnerBox = document.getElementById('spinner1')
             const formBox = document.getElementById('form')
-
+            spinnerBox.classList.add('d-none')
+            formBox.innerHTML += `
+                    <div class="form-control form-control-lg shadow-none {% if form.date_field.errors %} errors {% endif %}">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            {{ form.date_field.errors }}
+                            {{ form.date_field.label_tag }}
+                            {{ form.date_field }}
+                            <button type="submit">Submit</button>
+                        </form>
+                    </div>`
+        </script>
+        {% else %}
+        <script>
+            const spinnerBox = document.getElementById('spinner1')
+            const formBox = document.getElementById('form')
             $.ajax({
-                type: 'GET',
                 url: '/',
                 success: function(response){
                     spinnerBox.classList.add('d-none')
@@ -59,5 +75,6 @@
                 }
             })
         </script>
+        {% endif %}
     {% endblock %}
 {% endblock %}
